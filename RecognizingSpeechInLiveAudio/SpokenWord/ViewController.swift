@@ -50,7 +50,7 @@ public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         }
         return false
     }
-    
+    //Takes in an array of words and outputs the farthest index where that given word appears.
     func indexOfGivenWord (_ array: [String], word: String) -> Int {
         var index = 0
         var farthestIndex = 0
@@ -65,7 +65,7 @@ public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         return farthestIndex
 
     }
-    
+    //Takes a String sentence and outputs an array of the words in that sentence.
     func stringToArrayOfWords(_ sentences: String) -> [String] {
         var words: [String] = []
         var currWord: String = ""
