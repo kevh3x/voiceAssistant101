@@ -27,6 +27,8 @@ public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
     
     @IBOutlet var textView: UITextView!
     
+    private var prevSize: Int = 0
+    
     
 
     
@@ -65,7 +67,6 @@ public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
             }
         }
         return farthestIndex
-
     }
     //Takes a String sentence and outputs an array of the words in that sentence.
     func stringToArrayOfWords(_ sentences: String) -> [String] {
@@ -76,9 +77,10 @@ public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
                 words.append(currWord.lowercased())
                 currWord = ""
             } else {
-                currWord += String(letter.lowercased())
+                currWord += String(letter)
             }
         }
+        words.append(currWord)
         return words
     }
     // Starts Audio Engine in the app.
@@ -115,8 +117,6 @@ public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         recognitionRequest.shouldReportPartialResults = true
         
         
-        // Create a recognition task for the speech recognition session.
-        // Keep a reference to the task so that it can be canceled.
         recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { result, error in
             let isFinal = false
             
@@ -132,12 +132,11 @@ public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
 //                  var _: Timer? = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(self.nextKeyWord), userInfo: nil, repeats: false)
 //                    [hello, hey, victoria, uh, share]
 //
-                    
-                    
 //                      var foundWord = false
 //                    for i in originalSize...(audioArray.count) {
-                        print(audioArray)
-                        if (audioArray[audioArray.count - 1] == "share" /*&& !foundWord */) {
+                        
+//                    print(audioArray)
+                    if (audioArray[audioArray.count - 1] == "share" /*&& !foundWord */) {
                             print("You shared")
                             self.stopAudioEngine()
                             self.performSegue(withIdentifier: "ShareViewController", sender: self)
