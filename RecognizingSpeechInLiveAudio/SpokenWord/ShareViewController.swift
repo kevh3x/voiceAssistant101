@@ -14,6 +14,7 @@ class ShareViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("it worked!")
 
         // Do any additional setup after loading the view.
     }

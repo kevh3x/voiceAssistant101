@@ -35,7 +35,7 @@
                     </view>
                     <connections>
                         <outlet property="textView" destination="n1D-GC-6tq" id="6VE-9L-nZK"/>
-                        <segue destination="GEI-oc-PRc" kind="show" identifier="Share" id="seG-Fy-KgN"/>
+                        <segue destination="GEI-oc-PRc" kind="show" identifier="ShareViewController" id="seG-Fy-KgN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
