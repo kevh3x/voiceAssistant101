@@ -9,182 +9,22 @@ import UIKit
 import Speech
 
 public class ViewController: UIViewController, SFSpeechRecognizerDelegate {
-    // MARK: Properties
-    
-    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
-    
-    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
-    
-    private var recognitionTask: SFSpeechRecognitionTask?
-    
-    private let audioEngine = AVAudioEngine()
-    
-//    private var audioArray: [String] = []
-    
-    private var lastIndex: Int = 0
-    
-    private var choice: String = ""
-    
     @IBOutlet var textView: UITextView!
-    
-    private var prevSize: Int = 0
-    
-    
 
-    
     // MARK: View Controller Lifecycle
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.startAudioEngine()
+        let x: SpeechControls = SpeechControls(textView)
+        x.startAudioEngine()
         // Disable the record buttons until authorization has been granted.
 
-        
     }
-    //Checks to see if keywords are used in given String.
-    //Two pointers main and submain handle the position the keywords: Main must be before submain
-//    func keyWordChecker(_ liveAudio: String) -> Bool {
-////        let hey = indexOfGivenWord(liveAudio, word: "hey")
-////        let victoria = indexOfGivenWord(liveAudio, word: "victoria")
-////        var share = indexOfGivenWord(liveAudio, word: "share")
-////        var comment = indexOfGivenWord(liveAudio, word: "comment")
-//        //[hey, victoria, share]
-//        if liveAudio.contains("hey victoria") {
-//            return true
-//        }
-//        return false
-//    }
-    //Takes in an array of words and outputs the farthest index where that given word appears.
-    func indexOfGivenWord (_ array: [String], word: String) -> Int {
-        var index = 0
-        var farthestIndex = 0
-        if !array.contains(word) {return -1}
-        for i in array {
-            if i == word {
-                farthestIndex = index
-            } else {
-                index = index + 1
-            }
-        }
-        return farthestIndex
-    }
-    //Takes a String sentence and outputs an array of the words in that sentence.
-    func stringToArrayOfWords(_ sentences: String) -> [String] {
-        var words: [String] = []
-        var currWord: String = ""
-        for letter in sentences {
-            if letter == " " {
-                words.append(currWord.lowercased())
-                currWord = ""
-            } else {
-                currWord += String(letter)
-            }
-        }
-        words.append(currWord)
-        return words
-    }
-    // Starts Audio Engine in the app.
-    func startAudioEngine() {
-        do {
-            try startRecording()
-        } catch {
-        }
-    }
-    // Stops Audion Engine in the app.
-    func stopAudioEngine() {
-        if audioEngine.isRunning {
-            audioEngine.stop()
-            recognitionRequest?.endAudio()
-        }
-    }
+
 
     
-    private func startRecording() throws {
-        
-        // Cancel the previous task if it's running.
-        recognitionTask?.cancel()
-        self.recognitionTask = nil
-        
-        // Configure the audio session for the app.
-        let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-        let inputNode = audioEngine.inputNode
-
-        // Create and configure the speech recognition request.
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-        guard let recognitionRequest = recognitionRequest else { fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object") }
-        recognitionRequest.shouldReportPartialResults = true
-        
-        
-        recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { result, error in
-            let isFinal = false
-            
-            if let result = result {
-                // Update the text view with the results.
-                self.textView.text = result.bestTranscription.formattedString
-                let audio = result.bestTranscription.formattedString.lowercased()
-                var audioArray = self.stringToArrayOfWords(audio)
-                if audio.contains("hey victoria") {
-                    //[hello, hey, victoria]
-//                    let originalSize = audioArray.count - 1
-                    // audioArray.count is the last element
-//                  var _: Timer? = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(self.nextKeyWord), userInfo: nil, repeats: false)
-//                    [hello, hey, victoria, uh, share]
-//
-//                      var foundWord = false
-//                    for i in originalSize...(audioArray.count) {
-                        
-//                    print(audioArray)
-                    if (audioArray[audioArray.count - 1] == "share" /*&& !foundWord */) {
-                            print("You shared")
-                            self.stopAudioEngine()
-                            self.performSegue(withIdentifier: "ShareViewController", sender: self)
-                        } else if (audioArray[audioArray.count - 1] == "comment" /*&& !foundWord */) {
-                            self.choice = "comment"
-                            self.stopAudioEngine()
-                        } /*else if foundWord{
-                            do {
-                                try self.startRecording()
-                            } catch {
-                            }
-                        }*/
-                    }
-//                }
-            }
-            // Stop recognizing speech if there is a problem.
-            if error != nil || isFinal {
-                
-                self.audioEngine.stop()
-                inputNode.removeTap(onBus: 0)
-                self.recognitionRequest = nil
-                self.recognitionTask = nil
-//
-//                switch self.choice {
-//                case "share":
-//                    self.performSegue(withIdentifier: "ShareViewController", sender: self)
-//                default:
-//                    print("default option displayed")
-//                }
-
-            }
-        }
-        
-        // Configure the microphone input.
-        let recordingFormat = inputNode.outputFormat(forBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
-            self.recognitionRequest?.append(buffer)
-        }
-        
-        audioEngine.prepare()
-        try audioEngine.start()
-        
-        // Let the user know to start talking.
-        textView.text = "(Go ahead, I'm listening)"
-    }
     
-    @objc func nextKeyWord () {
-    }
+
     
 }
 
